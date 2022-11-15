@@ -28,7 +28,8 @@ def print_pretty_table(headers, rows):
 def print_csv(headers, rows):
     print(";".join(headers))
     for row in rows:
-        print(";".join(row))
+        str_row = list(map(str, row))
+        print(";".join(str_row))
 
 def print_kinds(kinds):
     for k in sorted(kinds.keys()):
