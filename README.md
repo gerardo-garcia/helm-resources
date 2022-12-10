@@ -42,6 +42,27 @@ StatefulSet;release-name-worker;1;worker-log-groomer;-;-;-;-
 
 ```
 
+And now a Helm Chart with Pods:
+
+```bash
+$ helm repo add hazelcast https://hazelcast-charts.s3.amazonaws.com/
+$ helm repo update
+$ helm pull hazelcast/hazelcast --version 5.6.0
+
+$ helm template hazelcast-5.6.0.tgz | ./helm_resources.py
+```
+
+```bash
+$ helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+$ helm repo update
+$ helm pull prometheus-community/prometheus-node-exporter  --version 4.8.0
+$ helm pull prometheus-community/kube-prometheus-stack --version 42.2.1
+
+$ helm template prometheus-node-exporter-4.8.0.tgz | ./helm_resources.py
+$ helm template kube-prometheus-stack-42.2.1.tgz | ./helm_resources.py
+
+```
+
 ## Requirements
 
 - Python3
