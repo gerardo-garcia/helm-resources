@@ -83,9 +83,10 @@ MULTIPLIER = {
 
 
 def extract_number(metric, sep):
-    if metric == "-":
+    metric_str = str(metric)
+    if metric_str == "-":
         return 0
-    elif metric.endswith(sep):
+    elif metric_str.endswith(sep):
         logger.info(metric)
         return int(metric.split(sep)[0])
     else:
