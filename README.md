@@ -42,25 +42,53 @@ StatefulSet;release-name-worker;1;worker-log-groomer;-;-;-;-
 
 ```
 
-And now a Helm Chart with Pods:
+And to get an additional summary with the different kinds and the total amount of resources:
 
-```bash
-$ helm repo add hazelcast https://hazelcast-charts.s3.amazonaws.com/
-$ helm repo update
-$ helm pull hazelcast/hazelcast --version 5.6.0
-
-$ helm template hazelcast-5.6.0.tgz | ./helm_resources.py
 ```
+$ helm template kube-prometheus-stack-42.2.1.tgz |./helm_resources.py --summary
++------------+---------------------------------------+------------+------------------------+--------------+------------+-----------------+---------------+
+| Kind       | Name                                  | Replicas   | Container              | CPU requests | CPU limits | Memory requests | Memory limits |
++------------+---------------------------------------+------------+------------------------+--------------+------------+-----------------+---------------+
+| DaemonSet  | release-name-prometheus-node-exporter | N/A (auto) | node-exporter          | -            | -          | -               | -             |
+| Deployment | release-name-grafana                  | 1          | grafana-sc-dashboard   | -            | -          | -               | -             |
+| Deployment | release-name-grafana                  | 1          | grafana-sc-datasources | -            | -          | -               | -             |
+| Deployment | release-name-grafana                  | 1          | grafana                | -            | -          | -               | -             |
+| Deployment | release-name-kube-state-metrics       | 1          | kube-state-metrics     | -            | -          | -               | -             |
+| Deployment | release-name-kube-promethe-operator   | 1          | kube-prometheus-stack  | -            | -          | -               | -             |
+| Pod        | release-name-grafana-test             | 1 (auto)   | release-name-test      | -            | -          | -               | -             |
++------------+---------------------------------------+------------+------------------------+--------------+------------+-----------------+---------------+
 
-```bash
-$ helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-$ helm repo update
-$ helm pull prometheus-community/prometheus-node-exporter  --version 4.8.0
-$ helm pull prometheus-community/kube-prometheus-stack --version 42.2.1
-
-$ helm template prometheus-node-exporter-4.8.0.tgz | ./helm_resources.py
-$ helm template kube-prometheus-stack-42.2.1.tgz | ./helm_resources.py
-
++--------------------------------+--------+
+| Kind                           | Number |
++--------------------------------+--------+
+| Alertmanager                   | 1      |
+| ClusterRole                    | 5      |
+| ClusterRoleBinding             | 5      |
+| ConfigMap                      | 30     |
+| DaemonSet                      | 1      |
+| Deployment                     | 3      |
+| Job                            | 2      |
+| MutatingWebhookConfiguration   | 1      |
+| Pod                            | 1      |
+| Prometheus                     | 1      |
+| PrometheusRule                 | 29     |
+| Role                           | 2      |
+| RoleBinding                    | 2      |
+| Secret                         | 2      |
+| Service                        | 11     |
+| ServiceAccount                 | 8      |
+| ServiceMonitor                 | 13     |
+| ValidatingWebhookConfiguration | 1      |
++--------------------------------+--------+
++------------------+---+
+| TOTALS           |   |
++------------------+---+
+| min_servers      | 1 |
+| total_cpu_limits | 0 |
+| total_cpu_req    | 0 |
+| total_mem_limits | 0 |
+| total_mem_req    | 0 |
++------------------+---+
 ```
 
 ## Requirements
