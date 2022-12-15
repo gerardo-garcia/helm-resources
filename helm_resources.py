@@ -53,12 +53,12 @@ def print_summary(kinds, totals):
 
     table2 = PrettyTable(["TOTALS", ""])
     for k, v in sorted(totals.items()):
-        if "cpu" in k:
+        if "_cpu_" in k:
             k = f"{k} (vCPU)"
-            v = f"{v:.1f}"
-        elif "memory" in k:
-            k = f"{k} (Mi)"
             v = f"{v:.3f}"
+        elif "_mem_" in k:
+            k = f"{k} (Mi)"
+            v = f"{v:.1f}"
         table2.add_row([k, v])
     table2.align = "l"
     print(table2)
