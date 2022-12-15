@@ -53,6 +53,12 @@ def print_summary(kinds, totals):
 
     table2 = PrettyTable(["TOTALS", ""])
     for k, v in sorted(totals.items()):
+        if "cpu" in k:
+            k = f"{k} (vCPU)"
+            v = f"{v:.1f}"
+        elif "memory" in k:
+            k = f"{k} (Mi)"
+            v = f"{v:.3f}"
         table2.add_row([k, v])
     table2.align = "l"
     print(table2)
@@ -77,21 +83,32 @@ def set_logger(verbose):
 
 
 MULTIPLIER = {
-    "m": 1000,
-    "Mi": 1024,
+    "m": 0.001,
+    "Mi": 1,
+    "Gi": 1024,
 }
 
 
-def extract_number(metric, sep):
+def extract_number(metric, metric_type):
     metric_str = str(metric)
     if metric_str == "-":
         return 0
-    elif metric_str.endswith(sep):
-        logger.info(metric)
-        return int(metric.split(sep)[0])
+    # Get unit
+    unit = "-"
+    for k in MULTIPLIER:
+        if metric_str.endswith(k):
+            logger.info(metric_str)
+            unit = k
+            value = metric_str.split(unit)[0]
+            break
+    # Update value
+    if unit == "-":
+        value = int(metric)
+        if metric_type == "memory":
+            value = int(value/(1024*1024))
     else:
-        logger.info(metric)
-        return int(MULTIPLIER[sep] * metric)
+        value = MULTIPLIER[unit] * int(metric.split(unit)[0])
+    return value
 
 
 def get_manifest_params(manifest, kinds):
@@ -159,10 +176,10 @@ def get_hpa_info(manifest, hpas):
 
 
 def update_totals(totals, cpu_req, cpu_limits, mem_req, mem_limits, replicas):
-    totals["total_cpu_req"] += extract_number(cpu_req, "m")
-    totals["total_cpu_limits"] += extract_number(cpu_limits, "m")
-    totals["total_mem_req"] += extract_number(mem_req, "Mi")
-    totals["total_mem_limits"] += extract_number(mem_limits, "Mi")
+    totals["total_cpu_req"] += extract_number(cpu_req, "cpu")
+    totals["total_cpu_limits"] += extract_number(cpu_limits, "cpu")
+    totals["total_mem_req"] += extract_number(mem_req, "memory")
+    totals["total_mem_limits"] += extract_number(mem_limits, "memory")
     totals["min_servers"] = max(totals["min_servers"], replicas)
     return
 
@@ -220,10 +237,10 @@ if __name__ == "__main__":
     ]
     rows = []
     totals = {
-        "total_cpu_req": 0,
-        "total_cpu_limits": 0,
-        "total_mem_req": 0,
-        "total_mem_limits": 0,
+        "total_cpu_req": 0.0,
+        "total_cpu_limits": 0.0,
+        "total_mem_req": 0.0,
+        "total_mem_limits": 0.0,
         "min_servers": 0,
     }
 
