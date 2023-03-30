@@ -105,7 +105,7 @@ def extract_number(metric, metric_type):
     if unit == "-":
         value = int(metric)
         if metric_type == "memory":
-            value = int(value/(1024*1024))
+            value = int(value / (1024 * 1024))
     else:
         value = MULTIPLIER[unit] * int(metric.split(unit)[0])
     return value
@@ -168,7 +168,7 @@ def get_container_params(container):
 
 
 def get_hpa_info(manifest, hpas):
-    spec = manifest.get("spec", {})
+    # spec = manifest.get("spec", {})
     # spec.scaleTargetRef
     # spec.minReplicas
     # spec.maxReplicas
@@ -253,6 +253,7 @@ if __name__ == "__main__":
         kind, name = get_manifest_params(manifest, kinds)
         if kind not in relevant_kinds:
             continue
+        # TODO HorizontalPodAutoscaler
         if kind in {"HorizontalPodAutoscaler"}:
             continue
         replicas, replicas_str = get_replicas(manifest, kind)
@@ -264,7 +265,18 @@ if __name__ == "__main__":
             if args.summary:
                 update_totals(totals, cpu_req, cpu_limits, mem_req, mem_limits, replicas)
             # Update table
-            rows.append([kind, name, replicas_str, c_name, cpu_req, cpu_limits, mem_req, mem_limits])
+            rows.append(
+                [
+                    kind,
+                    name,
+                    replicas_str,
+                    c_name,
+                    cpu_req,
+                    cpu_limits,
+                    mem_req,
+                    mem_limits,
+                ]
+            )
     print_table(headers, rows, args.output)
     if args.summary:
         print_summary(kinds, totals)
