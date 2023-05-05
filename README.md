@@ -94,5 +94,3 @@ $ helm template kube-prometheus-stack-42.2.1.tgz |./helm_resources.py --summary
 ## Requirements
 
 - Python3
-
-

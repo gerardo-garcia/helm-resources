@@ -1,16 +1,6 @@
-certifi==2022.12.7
-    # via requests
-charset-normalizer==3.1.0
-    # via requests
-idna==3.4
-    # via requests
 prettytable==3.7.0
     # via -r requirements.in
 pyyaml==6.0
     # via -r requirements.in
-requests==2.30.0
-    # via -r requirements.in
-urllib3==2.0.2
-    # via requests
 wcwidth==0.2.6
     # via prettytable
