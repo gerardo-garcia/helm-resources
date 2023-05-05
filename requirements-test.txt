@@ -1,6 +1,6 @@
-coverage==6.5.0
+coverage==7.2.5
     # via -r requirements-test.in
-mock==4.0.3
+mock==5.0.2
     # via -r requirements-test.in
-nose2==0.12.0
+nose2==0.13.0
     # via -r requirements-test.in

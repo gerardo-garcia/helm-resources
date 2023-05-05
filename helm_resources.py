@@ -3,6 +3,7 @@
 # helm template | helm_resources.py
 
 import yaml
+import json
 import sys
 import argparse
 from prettytable import PrettyTable
@@ -28,6 +29,19 @@ def print_pretty_table(headers, rows):
     print(table)
 
 
+def print_yaml_json(headers, rows, to_json=False):
+    output = []
+    for row in rows:
+        item = {}
+        for i in range(len(row)):
+            item[headers[i]] = row[i]
+        output.append(item)
+    if to_json:
+        print(json.dumps(output, indent=4))
+    else:
+        print(yaml.safe_dump(output, indent=4, default_flow_style=False, sort_keys=False))
+
+
 def print_csv(headers, rows):
     print(";".join(headers))
     for row in rows:
@@ -38,6 +52,10 @@ def print_csv(headers, rows):
 def print_table(headers, rows, output_format):
     if output_format == "table":
         print_pretty_table(headers, rows)
+    elif output_format == "yaml":
+        print_yaml_json(headers, rows)
+    elif output_format == "json":
+        print_yaml_json(headers, rows, to_json=True)
     else:
         # if output_format == "csv":
         print_csv(headers, rows)
@@ -213,7 +231,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "-o",
         "--output",
-        choices=["table", "csv"],
+        choices=["table", "csv", "yaml", "json"],
         default="table",
         help="output format",
     )
